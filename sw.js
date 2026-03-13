@@ -1,4 +1,4 @@
-const CACHE_NAME = 'favlinks-v1';
+const CACHE_NAME = 'favlinks-v2';
 
 const urlsToCache = [
   './',
