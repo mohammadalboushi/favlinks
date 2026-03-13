@@ -42,9 +42,20 @@ async function hashString(str) {
 }
 
 auth.onAuthStateChanged(user => {
+  const iconWrap = document.getElementById('googleAuthIconWrap');
+  const authLabel = document.getElementById('googleAuthLabel');
+
   if (user) {
     currentUid = user.uid;
-    document.getElementById('googleAuthLabel').textContent = 'تسجيل الخروج من جوجل';
+    if (authLabel) authLabel.textContent = 'تسجيل الخروج';
+    if (iconWrap) {
+        const photoUrl = user.photoURL;
+        if (photoUrl) {
+            iconWrap.innerHTML = `<img src="${photoUrl}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+            iconWrap.innerHTML = `<i class="fas fa-sign-out-alt" style="color: #ef4444; font-size: 16px;"></i>`;
+        }
+    }
     setupRealtimeListener(user.uid);
   } else {
     currentUid = null;
@@ -52,7 +63,16 @@ auth.onAuthStateChanged(user => {
     pwd = null;
     isUnlocked = false;
     if(unsubscribeData) { unsubscribeData(); unsubscribeData = null; }
-    document.getElementById('googleAuthLabel').textContent = 'تسجيل الدخول بجوجل';
+    
+    if (authLabel) authLabel.textContent = 'تسجيل الدخول بجوجل';
+    if (iconWrap) {
+        iconWrap.innerHTML = `<svg class="dditem-icon" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+             <path d="M22 12c0-.85-.08-1.68-.22-2.48H12v4.69h5.68c-.24 1.5-1.12 2.78-2.39 3.64v3.02h3.86c2.26-2.09 3.56-5.17 3.56-8.87z" fill="#4285F4"/>
+             <path d="M12 22c2.81 0 5.17-.93 6.9-2.52l-3.86-3.02c-.93.63-2.12 1-3.04 1-2.34 0-4.32-1.58-5.02-3.71H3.02v3.12C4.75 20.32 8.08 22 12 22z" fill="#34A853"/>
+             <path d="M6.98 13.75c-.18-.53-.28-1.1-.28-1.75s.1-1.22.28-1.75V7.13H3.02C2.37 8.43 2 9.94 2 12s.37 3.57 1.02 4.87l3.96-3.12z" fill="#FBBC05"/>
+             <path d="M12 5.38c1.53 0 2.91.53 3.98 1.51l2.98-2.98C17.17 2.15 14.81 1 12 1 8.08 1 4.75 2.68 3.02 6.13l3.96 3.12c.7-2.13 2.68-3.87 5.02-3.87z" fill="#EA4335"/>
+          </svg>`;
+    }
     updatePwdUI();
     render();
   }
